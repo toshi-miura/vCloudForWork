@@ -23,7 +23,7 @@ public class CalcPayment {
 	 * @return
 	 * @throws VCloudException
 	 */
-	public int calc(VApp vapp) throws VCloudException {
+	public <V extends VApp> int calc(V vapp) throws VCloudException {
 
 		int cpuCore = vapp.getCpu();
 		// TODO これ1000でいいのか？1024で切り上げ？
@@ -44,9 +44,10 @@ public class CalcPayment {
 	 * @return
 	 * @throws VCloudException
 	 */
-	public Set<Entry> calc(Collection<VApp> vapp) throws VCloudException {
+	public <V extends VApp> Set<Entry<V>> calc(Collection<V> vapp)
+			throws VCloudException {
 
-		HashSet<Entry> set = new HashSet<Entry>();
+		HashSet<Entry<V>> set = new HashSet<Entry<V>>();
 
 		for (VApp app : vapp) {
 			set.add(new Entry(app, calc(app)));
@@ -57,18 +58,18 @@ public class CalcPayment {
 
 	}
 
-	static class Entry {
+	public static class Entry<V extends VApp> {
 
-		private final VApp vapp;
+		private final V vapp;
 		private final int payment;
 
-		public Entry(VApp vapp, int payment) {
+		public Entry(V vapp, int payment) {
 			super();
 			this.vapp = vapp;
 			this.payment = payment;
 		}
 
-		public VApp getVapp() {
+		public V getVapp() {
 			return vapp;
 		}
 
