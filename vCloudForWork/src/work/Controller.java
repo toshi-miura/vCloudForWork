@@ -6,6 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +20,7 @@ import com.vmware.vcloud.sdk.VCloudException;
 public class Controller {
 
 	private VMDetailsMapper mapper;
+	private final Executor executor = Executors.newFixedThreadPool(4);
 
 	public Controller() {
 
@@ -26,7 +29,7 @@ public class Controller {
 		refreshTask();
 	}
 
-	public synchronized void init() {
+	public void init() {
 		try {
 			mapper = new VMDetailsMapper(Conf.HOST, Conf.USER, Conf.PASS);
 
@@ -48,7 +51,7 @@ public class Controller {
 		}
 	}
 
-	public synchronized void refresh() {
+	public void refresh() {
 		try {
 
 			mapper.run();
@@ -104,6 +107,40 @@ public class Controller {
 			throws VCloudException {
 
 		return toWork(mapper.refresh(vappSet));
+	}
+
+	/**
+	 * 非同期でキャッシュのクリアを実行
+	 * @param vapp
+	 * @throws VCloudException
+	 */
+	public void refreshAsync(final VApp4Work vapp) throws VCloudException {
+
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					mapper.refresh(vapp);
+					System.out.println("ASYNC END");
+				} catch (VCloudException e) {
+					// TODO
+				}
+
+			}
+		});
+
+	}
+
+	/**
+	 * 非同期でキャッシュのクリアを実行
+	 * @param vapp
+	 * @throws VCloudException
+	 */
+	public void refreshAsync(Set<VApp4Work> vappSet) throws VCloudException {
+
+		for (VApp4Work vApp4Work : vappSet) {
+			refreshAsync(vApp4Work);
+		}
 	}
 
 }
