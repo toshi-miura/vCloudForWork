@@ -22,11 +22,15 @@ public class Controller {
 	private VMDetailsMapper mapper;
 	private final Executor executor = Executors.newFixedThreadPool(4);
 
-	public Controller() {
+	private final CalcPayment calc;
 
+	public Controller(CalcPayment calc) {
+
+		this.calc = calc;
 		init();
 		refresh();
 		refreshTask();
+
 	}
 
 	public void init() {
@@ -98,17 +102,57 @@ public class Controller {
 		return toWork(mapper.getVappSetByUser(vcdNamd, userid));
 	}
 
+	/**
+	 * 未認証のアプリのみ返します。
+	 * @param vcdNamd
+	 * @return
+	 * @throws VCloudException
+	 */
+	public Set<VApp4Work> getVappInValidAuth(String vcdNamd)
+			throws VCloudException {
+
+		Set<VApp4Work> work = toWork(mapper.getVappSet(vcdNamd));
+		Set<VApp4Work> result = new HashSet<VApp4Work>();
+
+		for (VApp4Work vApp4Work : work) {
+			if (!vApp4Work.isAuthStatus()) {
+				result.add(vApp4Work);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Pno
+	 * @param vcdNamd
+	 * @return
+	 * @throws VCloudException
+	 */
+	public Set<VApp4Work> getVappInValidPno(String vcdNamd)
+			throws VCloudException {
+
+		Set<VApp4Work> work = toWork(mapper.getVappSet(vcdNamd));
+		Set<VApp4Work> result = new HashSet<VApp4Work>();
+
+		for (VApp4Work vApp4Work : work) {
+			if (!vApp4Work.isAuthStatus()) {
+				result.add(vApp4Work);
+			}
+		}
+		return result;
+	}
+
 	private Set<VApp4Work> toWork(Set<VApp> vappSet) throws VCloudException {
 		Set<VApp4Work> vapp4workSet = new HashSet<VApp4Work>();
 		for (VApp vApp : vappSet) {
-			vapp4workSet.add(new VApp4Work(vApp));
+			vapp4workSet.add(new VApp4Work(vApp, this.calc));
 		}
 		return vapp4workSet;
 	}
 
 	public VApp4Work refresh(VApp4Work vapp) throws VCloudException {
 		VApp refresh = mapper.refresh(vapp);
-		return new VApp4Work(refresh);
+		return new VApp4Work(refresh, this.calc);
 	}
 
 	public Set<VApp4Work> refresh(Set<VApp4Work> vappSet)

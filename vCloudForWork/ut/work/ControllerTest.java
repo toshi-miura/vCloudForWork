@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import work.CalcPayment.Entry;
-
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class ControllerTest {
@@ -21,7 +19,8 @@ public class ControllerTest {
 	@BeforeClass
 	public static void beforClass() throws Exception {
 		try {
-			contoroller = new Controller();
+			contoroller = new Controller(
+					new CalcPaymentImpl(new WorkCalcConf()));
 
 		} catch (Exception e) {
 
@@ -52,16 +51,6 @@ public class ControllerTest {
 
 		Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
 				"miura");
-
-		CalcPayment calcPayment = new CalcPayment(new WorkCalcConf());
-		Set<Entry<VApp4Work>> calc = calcPayment.calc(vappSet);
-
-		for (Entry<VApp4Work> e : calc) {
-			System.out.println(e.getVapp().toBaseString() + "\t"
-					+ e.getPayment());
-
-		}
-		System.out.println();
 
 	}
 
@@ -399,14 +388,9 @@ public class ControllerTest {
 			Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
 					"miura");
 
-			CalcPayment calcPayment = new CalcPayment(new WorkCalcConf());
-			Set<Entry<VApp4Work>> calc = calcPayment.calc(vappSet);
+			CalcPaymentImpl calcPayment = new CalcPaymentImpl(
+					new WorkCalcConf());
 
-			for (Entry<VApp4Work> e : calc) {
-				System.out.println(e.getVapp().toBaseString() + "\t"
-						+ e.getPayment());
-
-			}
 		}
 		System.out.println();
 

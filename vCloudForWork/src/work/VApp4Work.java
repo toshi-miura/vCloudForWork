@@ -48,6 +48,49 @@ public class VApp4Work extends VApp {
 	private static final String VAPP_UPDATE_DATE_STR = "VAPP_UPDATE_DATE_STR";
 
 	protected VApp vapp;
+	private final CalcPayment calc;
+
+	public VApp4Work(VApp app, CalcPayment calc) throws VCloudException {
+		// 当初は継承モデルで実装していたが、INITが遅いので委譲モデルに切り替える
+		// super(app);
+		this.vapp = app;
+		this.calc = calc;
+
+		init();
+	}
+
+	/**
+	 * VAPPの初期化。
+	 *
+	 * 構成情報変更管理。
+	 *
+	 * @throws VCloudException
+	 */
+	private void init() throws VCloudException {
+
+		// 構成情報管理
+		{
+			String oldVappInfo = getOldVappInfo();
+			String baseSimpleInfo = vapp.toBaseSimpleInfo();
+
+			if (!baseSimpleInfo.equals(oldVappInfo)) {
+				setOldVappInfo(baseSimpleInfo);
+				setVappUpdateDateStr(toStr(new Date()));
+
+			}
+		}
+		// 作成日
+		{
+			String startDate = getStartDate();
+			if (startDate == null) {
+				setStartDate(toStr(new Date()));
+			}
+		}
+
+		// metadataを最後に更新。
+		metadataUpdate();
+
+	}
 
 	@Override
 	public Vapp getVcdVapp() {
@@ -106,7 +149,9 @@ public class VApp4Work extends VApp {
 		try {
 			return vapp.toBaseString() + "\t" + "Author:	" + getAuthor() + "\t"
 					+ "pNo:	" + getpNo() + "\t" + "StartDate:	"
-					+ getStartDate();
+					+ getStartDate() + "\t" + "costPerMonth:	" + costPerMonth()
+					+ "\t" + "updateDate:	" + getVappUpdateDateStr();
+
 		} catch (VCloudException e) {
 
 			e.printStackTrace();
@@ -127,47 +172,6 @@ public class VApp4Work extends VApp {
 	@Override
 	public int hashCode() {
 		return vapp.hashCode();
-	}
-
-	public VApp4Work(VApp app) throws VCloudException {
-		// 当初は継承モデルで実装していたが、INITが遅いので委譲モデルに切り替える
-		// super(app);
-		this.vapp = app;
-
-		init();
-	}
-
-	/**
-	 * VAPPの初期化。
-	 *
-	 * 構成情報変更管理。
-	 *
-	 * @throws VCloudException
-	 */
-	private void init() throws VCloudException {
-
-		// 構成情報管理
-		{
-			String oldVappInfo = getOldVappInfo();
-			String baseSimpleInfo = vapp.toBaseSimpleInfo();
-
-			if (!baseSimpleInfo.equals(oldVappInfo)) {
-				setOldVappInfo(baseSimpleInfo);
-				setVappUpdateDateStr(toStr(new Date()));
-
-			}
-		}
-		// 作成日
-		{
-			String startDate = getStartDate();
-			if (startDate == null) {
-				setStartDate(toStr(new Date()));
-			}
-		}
-
-		// metadataを最後に更新。
-		metadataUpdate();
-
 	}
 
 	public String getAuthor() throws VCloudException {
@@ -197,12 +201,20 @@ public class VApp4Work extends VApp {
 		vapp.setMetadataStr(START_DATE, startDate);
 	}
 
-	public String getAuthStatus() throws VCloudException {
+	public boolean isAuthStatus() throws VCloudException {
+		return Boolean.valueOf(getAuthStatus());
+	}
+
+	public void setAuthStatus(boolean b) throws VCloudException {
+		setAuthStatus(Boolean.toString(b));
+	}
+
+	private String getAuthStatus() throws VCloudException {
 		return vapp.getMetadataStr(AUTH_STATUS);
 
 	}
 
-	public void setAuthStatus(String authStatus) throws VCloudException {
+	private void setAuthStatus(String authStatus) throws VCloudException {
 		vapp.setMetadataStr(AUTH_STATUS, authStatus);
 	}
 
@@ -230,6 +242,10 @@ public class VApp4Work extends VApp {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		return simpleDateFormat.format(date);
+	}
+
+	public int costPerMonth() throws VCloudException {
+		return calc.calc(this);
 	}
 
 }
