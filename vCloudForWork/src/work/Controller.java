@@ -55,6 +55,14 @@ public class Controller {
 		try {
 
 			mapper.run();
+			// リフレッシュのタイミングで、VAPPのイニットを走らせる。
+
+			Set<String> vcdNameSet = mapper.getVCDNameSet();
+			for (String vcdName : vcdNameSet) {
+				getVappSet(vcdName);
+
+			}
+
 		} catch (VCloudException e) {
 
 			e.printStackTrace();

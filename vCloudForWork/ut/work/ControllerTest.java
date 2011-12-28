@@ -80,7 +80,7 @@ public class ControllerTest {
 		}
 		System.out.println("-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("2010/10/10");
+
 			vApp4Work.setAuthor("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
@@ -106,7 +106,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("");
+
 			vApp4Work.setAuthor("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
@@ -151,7 +151,7 @@ public class ControllerTest {
 		System.out
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("2010/10/10");
+
 			vApp4Work.setAuthor("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
@@ -171,7 +171,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("");
+
 			vApp4Work.setAuthor("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
@@ -211,7 +211,7 @@ public class ControllerTest {
 		System.out
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("2010/10/10");
+
 			vApp4Work.setAuthor("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
@@ -237,7 +237,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("");
+
 			vApp4Work.setAuthor("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
@@ -275,7 +275,7 @@ public class ControllerTest {
 		System.out
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("2010/10/10");
+
 			vApp4Work.setAuthor("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
@@ -302,7 +302,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("");
+
 			vApp4Work.setAuthor("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
@@ -340,7 +340,7 @@ public class ControllerTest {
 		System.out
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("2010/10/10");
+
 			vApp4Work.setAuthor("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
@@ -367,7 +367,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 
 		for (VApp4Work vApp4Work : vappSet) {
-			vApp4Work.setStartDate("");
+
 			vApp4Work.setAuthor("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
