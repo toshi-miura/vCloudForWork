@@ -138,7 +138,7 @@ public class Controller {
 	}
 
 	/**
-	 * Pno
+	 * Pno不正のマシンのみをとりだす。
 	 * @param vcdNamd
 	 * @return
 	 * @throws VCloudException

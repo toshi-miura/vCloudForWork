@@ -17,7 +17,7 @@ public class ADTest {
 		String user = ADTestConf.TEST2.user;
 		String pass = ADTestConf.TEST2.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		String mail = ad.getMail(user, pass);
 		String display = ad.getDisplayName(user, pass);
@@ -37,7 +37,7 @@ public class ADTest {
 		String user = ADTestConf.TEST2.user;
 		String pass = ADTestConf.TEST2.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		UserInfo userInfo = ad.getUserInfo(user, pass);
 
@@ -55,10 +55,11 @@ public class ADTest {
 		String user = ADTestConf.TEST1.user;
 		String pass = ADTestConf.TEST1.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertTrue(ad.auth(user, pass));
-
+		UserInfo userInfo = ad.getUserInfo(user, pass);
+		System.out.println(userInfo);
 	}
 
 	@Test
@@ -71,9 +72,11 @@ public class ADTest {
 		String user = ADTestConf.TEST2.user;
 		String pass = ADTestConf.TEST2.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertTrue(ad.auth(user, pass));
+		UserInfo userInfo = ad.getUserInfo(user, pass);
+		System.out.println(userInfo);
 
 	}
 
@@ -87,10 +90,11 @@ public class ADTest {
 		String user = ADTestConf.TEST5.user;
 		String pass = ADTestConf.TEST5.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertTrue(ad.auth(user, pass));
-
+		UserInfo userInfo = ad.getUserInfo(user, pass);
+		System.out.println(userInfo);
 	}
 
 	@Test
@@ -103,10 +107,11 @@ public class ADTest {
 		String user = ADTestConf.TEST6.user;
 		String pass = ADTestConf.TEST6.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertTrue(ad.auth(user, pass));
-
+		UserInfo userInfo = ad.getUserInfo(user, pass);
+		System.out.println(userInfo);
 	}
 
 	@Test
@@ -118,7 +123,7 @@ public class ADTest {
 		String user = ADTestConf.TEST3.user;
 		String pass = ADTestConf.TEST3.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertFalse(ad.auth(user, pass));
 
@@ -133,7 +138,7 @@ public class ADTest {
 		String user = ADTestConf.TEST4.user;
 		String pass = ADTestConf.TEST4.pass;
 
-		AD ad = new AD(ldapADsPath, domainName);
+		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 
 		assertFalse(ad.auth(user, pass));
 

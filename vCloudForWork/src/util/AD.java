@@ -14,18 +14,20 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapContext;
 
 public class AD {
 
-	public AD(String ldapADsPath, String domainName) {
+	private final String ldapADsPath;
+	private final String domainName;
+	private final String baseDn;
+
+	public AD(String ldapADsPath, String domainName, String baseDN) {
 		super();
 		this.ldapADsPath = ldapADsPath;
 		this.domainName = domainName;
-	}
+		this.baseDn = baseDN;
 
-	private final String ldapADsPath;
-	private final String domainName;
+	}
 
 	public boolean auth(String user, String pass) {
 
@@ -42,55 +44,6 @@ public class AD {
 		try {
 			// bind認証する
 			DirContext ctx = new InitialDirContext(env);
-			ctx.close();
-			result = true;
-
-		} catch (AuthenticationException ae) {
-			result = false;
-
-		} catch (Exception e) {
-
-			throw new IllegalStateException("想定外のエラー", e);
-		}
-		return result;
-	}
-
-	public boolean auth2(String user, String pass) {
-
-		Hashtable<String, String> env = new Hashtable<String, String>();
-
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				"com.sun.jndi.ldap.LdapCtxFactory");
-		env.put(Context.PROVIDER_URL, ldapADsPath);
-		env.put(Context.SECURITY_AUTHENTICATION, "simple");
-		env.put(Context.SECURITY_PRINCIPAL, user + "@" + domainName);
-		env.put(Context.SECURITY_CREDENTIALS, pass);
-
-		env.put(Context.REFERRAL, "follow");
-
-		boolean result;
-		try {
-			// bind認証する
-			DirContext ctx = new InitialDirContext(env);
-
-			Object lookup = ctx.lookup("CN=hoge,CN=Users,DC=vm,DC=local");
-			if (lookup instanceof LdapContext) {
-				LdapContext l = (LdapContext) lookup;
-
-				System.out.println(l.getAttributes("attr=mail"));
-
-				/*
-				Hashtable<?, ?> environment = l.getEnvironment();
-				for (Entry<?, ?> e : environment.entrySet()) {
-
-					System.out.println(e.getKey() + " " + e.getValue());
-				}
-				*/
-
-			}
-
-			System.out.println(lookup);
-
 			ctx.close();
 			result = true;
 
@@ -176,7 +129,8 @@ public class AD {
 
 			InitialDirContext dirContext = new InitialDirContext(env);
 
-			String baseDn = "CN=Users,DC=vm,DC=local";
+			// String baseDn = "CN=Users,DC=vm,DC=local";
+
 			String filter = "sn=" + user;
 
 			SearchControls searchControls = new SearchControls();
@@ -219,7 +173,7 @@ public class AD {
 			dirContext.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new IllegalArgumentException("認証エラーと思われます。", e);
 		}
 
 		return entry;
