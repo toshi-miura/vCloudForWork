@@ -1,7 +1,9 @@
 package work;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Date;
 import java.util.Set;
 
 import org.junit.After;
@@ -20,7 +22,9 @@ public class ControllerTest {
 	public static void beforClass() throws Exception {
 		try {
 			contoroller = new Controller(
-					new CalcPaymentImpl(new WorkCalcConf()));
+					new CalcPaymentImpl(new WorkCalcConf()),
+					new ProjCodeCheckerImpl(
+							"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt"));
 
 		} catch (Exception e) {
 
@@ -377,22 +381,123 @@ public class ControllerTest {
 
 	}
 
-	/**
-	 * パフォーマンスレベルを見るために。
-	 * 通信のタイミングをあまり理解していないため。
-	 * @throws VCloudException
-	 */
-	// @Test
-	public void testWorkVappLoop() throws VCloudException {
-		for (int i = 0; i < 10; i++) {
-			Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
-					"miura");
+	@Test
+	public void test単純動作確認() throws VCloudException {
 
-			CalcPaymentImpl calcPayment = new CalcPaymentImpl(
-					new WorkCalcConf());
+		Set<VApp4Work> vappSet = contoroller.getVappSet("KAIGIV5");
 
+		System.out
+				.println("単純動作確認-------------------------------------------------");
+
+		int hdd = 0;
+		int mem = 0;
+		for (VApp4Work vApp4Work : vappSet) {
+
+			System.out.println(vApp4Work.toBaseString());
+			mem += vApp4Work.getMemorySizeMB();
+			hdd += vApp4Work.getTotalHDDGB();
 		}
-		System.out.println();
+		System.out.println("SUM");
+		System.out.println("HDD(GB)		" + hdd);
+		System.out.println("mem(MB)		" + mem);
+
+	}
+
+	@Test
+	public void test認証不正() throws VCloudException {
+
+		Set<VApp4Work> vappSet = contoroller.getVappInValidAuth("KAIGIV5");
+
+		System.out
+				.println("認証不正-------------------------------------------------");
+
+		for (VApp4Work vApp4Work : vappSet) {
+
+			System.out.println(vApp4Work.toBaseString());
+		}
+
+	}
+
+	@Test
+	public void testPno不正() throws VCloudException {
+
+		Set<VApp4Work> vappSet = contoroller.getVappInValidPno("KAIGIV5",
+				new Date("2011/05/01"));
+
+		System.out
+				.println("Pno不正-------------------------------------------------");
+
+		for (VApp4Work vApp4Work : vappSet) {
+
+			System.out.println(vApp4Work.toBaseString());
+		}
+
+	}
+
+	@Test
+	public void testOKな設定() throws VCloudException {
+
+		Set<VApp4Work> vappSet = contoroller.getVappSet("KAIGIV5");
+
+		System.out
+				.println("OKな設定-------------------------------------------------");
+
+		for (VApp4Work vApp4Work : vappSet) {
+
+			vApp4Work.setAuthStatus(true);
+			vApp4Work.setpNo("LIPJ10030678");
+			vApp4Work.metadataUpdate();
+		}
+
+		vappSet = contoroller.refresh(vappSet);
+
+	}
+
+	@Test
+	public void testOKなはず() throws VCloudException {
+
+		System.out.println("■OKなはず");
+		Set<VApp4Work> vappSet = contoroller.getVappInValidAuth("KAIGIV5");
+		Set<VApp4Work> vappSet2 = contoroller.getVappInValidPno("KAIGIV5",
+				new Date("2011/05/01"));
+
+		assertEquals(vappSet.size(), 0);
+		assertEquals(vappSet2.size(), 0);
+
+	}
+
+	@Test
+	public void testPno日付間違い() throws VCloudException {
+
+		System.out.println("■Pno日付間違い");
+
+		Set<VApp4Work> vappSet2 = contoroller.getVappInValidPno("KAIGIV5",
+				new Date("2012/05/01"));
+
+		for (VApp4Work vApp4Work : vappSet2) {
+
+			System.out.println(vApp4Work.toBaseString());
+		}
+
+		assertEquals(vappSet2.size(), 5);
+	}
+
+	@Test
+	public void testNGな設定() throws VCloudException {
+
+		Set<VApp4Work> vappSet = contoroller.getVappSet("KAIGIV5");
+
+		System.out
+				.println("NGな設定-------------------------------------------------");
+
+		for (VApp4Work vApp4Work : vappSet) {
+
+			vApp4Work.setAuthStatus(false);
+			vApp4Work.setpNo("DUMMY");
+			vApp4Work.metadataUpdate();
+		}
+
+		vappSet = contoroller.refresh(vappSet);
 
 	}
 

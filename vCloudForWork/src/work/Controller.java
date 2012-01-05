@@ -4,6 +4,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -23,10 +24,12 @@ public class Controller {
 	private final Executor executor = Executors.newFixedThreadPool(4);
 
 	private final CalcPayment calc;
+	private final ProjCodeChecker checker;
 
-	public Controller(CalcPayment calc) {
+	public Controller(CalcPayment calc, ProjCodeChecker checker) {
 
 		this.calc = calc;
+		this.checker = checker;
 		init();
 		refresh();
 		refreshTask();
@@ -131,11 +134,23 @@ public class Controller {
 	public Set<VApp4Work> getVappInValidPno(String vcdNamd)
 			throws VCloudException {
 
+		return getVappInValidPno(vcdNamd, new Date());
+	}
+
+	/**
+	 * Pno
+	 * @param vcdNamd
+	 * @return
+	 * @throws VCloudException
+	 */
+	public Set<VApp4Work> getVappInValidPno(String vcdNamd, Date date)
+			throws VCloudException {
+
 		Set<VApp4Work> work = toWork(mapper.getVappSet(vcdNamd));
 		Set<VApp4Work> result = new HashSet<VApp4Work>();
 
 		for (VApp4Work vApp4Work : work) {
-			if (!vApp4Work.isAuthStatus()) {
+			if (!checker.valid(vApp4Work.getpNo(), date)) {
 				result.add(vApp4Work);
 			}
 		}

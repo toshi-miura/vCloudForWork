@@ -33,14 +33,14 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain() throws IOException {
-		new ProjCodeChecker(
-				"C:\\Users\\user\\git\\vCloudForWorkWeb\\vCloudForWorkWeb\\conf\\P__20110401-20110630-0.txt");
+		new ProjCodeCheckerImpl(
+				"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt");
 	}
 
 	@Test
 	public void testMain2() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeChecker(
-				"C:\\Users\\user\\git\\vCloudForWorkWeb\\vCloudForWorkWeb\\conf\\P__20110401-20110630-0.txt");
+		ProjCodeCheckerImpl projCodeChecker = new ProjCodeCheckerImpl(
+				"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt");
 
 		assertNotNull(projCodeChecker.getProjCodeInfo("LIPJ1104D140"));
 		assertNotNull(projCodeChecker.getProjCodeInfo("LIPJ1104D151"));
@@ -53,8 +53,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain3() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeChecker(
-				"C:\\Users\\user\\git\\vCloudForWorkWeb\\vCloudForWorkWeb\\conf\\P__20110401-20110630-0.txt");
+		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
+				"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt");
 
 		Date date = new Date("2011/05/01");
 		assertTrue(projCodeChecker.valid("LIPJ1104D140", date));
@@ -68,8 +68,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain4() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeChecker(
-				"C:\\Users\\user\\git\\vCloudForWorkWeb\\vCloudForWorkWeb\\conf\\P__20110401-20110630-0.txt");
+		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
+				"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt");
 
 		Date date = new Date("2012/05/01");
 		assertFalse(projCodeChecker.valid("LIPJ1104D140", date));
@@ -83,8 +83,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain5() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeChecker(
-				"C:\\Users\\user\\git\\vCloudForWorkWeb\\vCloudForWorkWeb\\conf\\P__20110401-20110630-0.txt");
+		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
+				"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt");
 
 		Date date = new Date("2011/05/01");
 		assertFalse(projCodeChecker.valid("aaa", date));
