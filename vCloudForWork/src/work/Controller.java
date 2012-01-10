@@ -12,13 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import my.VMDetailsMapper;
-import mydata.VApp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utconf.Conf;
+
+import base.my.VMDetailsMapper;
+import base.mydata.VApp;
 
 import com.vmware.vcloud.sdk.VCloudException;
 

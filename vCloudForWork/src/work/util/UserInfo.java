@@ -1,4 +1,4 @@
-package util;
+package work.util;
 
 public class UserInfo {
 

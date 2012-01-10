@@ -5,9 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import mydata.User;
-import mydata.VApp;
-import mydata.VM;
+
+import base.mydata.User;
+import base.mydata.VApp;
+import base.mydata.VM;
 
 import com.vmware.vcloud.sdk.VCloudException;
 import com.vmware.vcloud.sdk.Vapp;

@@ -1,6 +1,7 @@
 package work;
 
-import mydata.VApp;
+
+import base.mydata.VApp;
 
 import com.vmware.vcloud.sdk.VCloudException;
 

@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import work.util.AD;
+import work.util.UserInfo;
+
 public class ADTest {
 
 	@Test
