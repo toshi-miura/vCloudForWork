@@ -87,8 +87,8 @@ public class ADTest {
 
 		String ldapADsPath = ADTestConf.TEST5.ldapADsPath;
 		String domainName = ADTestConf.TEST5.domainName;
-		String user = ADTestConf.TEST5.user;
-		String pass = ADTestConf.TEST5.pass;
+		String user = ADTestConf.TEST6.user;
+		String pass = ADTestConf.TEST6.pass;
 
 		AD ad = new AD(ldapADsPath, domainName, ADTestConf.BASE_DN);
 

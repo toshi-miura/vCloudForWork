@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import work.bat.BATTestConf;
+
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class ControllerTest {
@@ -23,8 +25,7 @@ public class ControllerTest {
 		try {
 			contoroller = new Controller(
 					new CalcPaymentImpl(new WorkCalcConf()),
-					new ProjCodeCheckerImpl(
-							"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt"));
+					new ProjCodeCheckerImpl(BATTestConf.PNOFILE));
 
 		} catch (Exception e) {
 

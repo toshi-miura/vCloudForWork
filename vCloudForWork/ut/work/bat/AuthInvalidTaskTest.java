@@ -28,12 +28,12 @@ public class AuthInvalidTaskTest {
 			contoroller = new Controller(
 					new CalcPaymentImpl(new WorkCalcConf()),
 					new ProjCodeCheckerImpl(
-							"C:\\Users\\user\\git\\vCloudForWork\\vCloudForWork\\conf\\P__20110401-20110630-0.txt"));
+							BATTestConf.PNOFILE));
 
 			pnoInvalidTask = new AuthInvalidTask(contoroller, new VcdConfImpl());
 
 			Set<VApp4Work> vappInValidPno = contoroller
-					.getVappInValidPno("KAIGIV5");
+					.getVappInValidPno(BATTestConf.VCDNAME);
 			System.out.println("INITTEST:" + vappInValidPno.size());
 
 		} catch (Exception e) {

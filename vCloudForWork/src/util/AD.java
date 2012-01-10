@@ -15,6 +15,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import com.google.common.base.Joiner;
+
 public class AD {
 
 	private final String ldapADsPath;
@@ -95,6 +97,8 @@ public class AD {
 	public UserInfo getUserInfo(String user, String pass) {
 
 		Map<String, List<String>> attr = getAttr(user, pass);
+
+		System.out.println(Joiner.on("\n").join(attr.values()));
 
 		UserInfo u = new UserInfo(user, pass, attr.get("displayName").get(0),
 				attr.get("telephoneNumber").get(0), attr.get("mail").get(0));
