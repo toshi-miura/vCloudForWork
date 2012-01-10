@@ -46,6 +46,7 @@ public class VApp4Work extends VApp {
 	private static final String START_DATE = "START_DATE";
 	private static final String OLD_VAPP_INFO = "OLD_VAPP_INFO";
 	private static final String VAPP_UPDATE_DATE_STR = "VAPP_UPDATE_DATE_STR";
+	private static final String MAX_COST = "MAX_COST";
 
 	protected VApp vapp;
 	private final CalcPayment calc;
@@ -181,6 +182,50 @@ public class VApp4Work extends VApp {
 
 	public void setAuthor(String author) throws VCloudException {
 		vapp.setMetadataStr(VApp4Work.AUTHOR, author);
+	}
+
+	/**
+	 * その月の最大コストを取得します。
+	 * @return
+	 * @throws VCloudException
+	 */
+	public int getMaxCost() throws VCloudException {
+		return vapp.getMetadataInt(MAX_COST);
+
+	}
+
+	/**
+	 * その月の最大コストを設定します。
+	 * @return
+	 * @throws VCloudException
+	 */
+	public void setMaxCost() throws VCloudException {
+
+		int maxCost = getMaxCost();
+		int costPerMonth = costPerMonth();
+		if (maxCost < costPerMonth) {
+			setMaxCost(costPerMonth);
+		}
+
+	}
+
+	/**
+	 * コストのリセットを実施します。
+	 * @return
+	 * @throws VCloudException
+	 */
+	public void resetMaxCost() throws VCloudException {
+
+		setMaxCost(0);
+	}
+
+	/**
+	 * その月の最大コストを設定します。
+	 * @return
+	 * @throws VCloudException
+	 */
+	private void setMaxCost(int cost) throws VCloudException {
+		vapp.setMetadataInt(VApp4Work.MAX_COST, cost);
 	}
 
 	public String getpNo() throws VCloudException {

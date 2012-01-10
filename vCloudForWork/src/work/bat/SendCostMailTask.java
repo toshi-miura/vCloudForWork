@@ -1,7 +1,6 @@
 package work.bat;
 
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -14,16 +13,15 @@ import work.VcdConf;
 import com.vmware.vcloud.sdk.VCloudException;
 
 /**
- * PNOの不正を検知する。
- * 定期的に走らせる。
- * 基本夜間にする。
+ * 課金予定額を送るメール。
+ * PNOが不正でもとりあえず送る。
  *
  * @author user
  *
  */
-public class PnoInvalidTask extends Task implements Callable<Void> {
+public class SendCostMailTask extends Task implements Callable<Void> {
 
-	public PnoInvalidTask(Controller cont, VcdConf conf) {
+	public SendCostMailTask(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;
 		this.conf = conf;
@@ -32,9 +30,9 @@ public class PnoInvalidTask extends Task implements Callable<Void> {
 	@Override
 	public Void call() throws Exception {
 
-		Set<VApp4Work> vappInValidPno = cont.getVappInValidPno(conf.vcdName,
-				new Date());
-		for (VApp4Work vApp4Work : vappInValidPno) {
+		Set<VApp4Work> allVapp = cont.getVappSet(conf.vcdName);
+		for (VApp4Work vApp4Work : allVapp) {
+
 			List<User> users = vApp4Work.getAllUsers();
 
 			System.out.println("-----------------------");
@@ -52,7 +50,7 @@ public class PnoInvalidTask extends Task implements Callable<Void> {
 	private void sendMail(VApp4Work vapp, List<User> users)
 			throws VCloudException {
 
-		String temple = load(conf.PnoInvalidTaskTemplatePath);
+		String temple = load(conf.SendCostMailTaskTemplatePath);
 
 		MessageFormat mf = new MessageFormat(temple);
 		String format = mf
@@ -65,5 +63,4 @@ public class PnoInvalidTask extends Task implements Callable<Void> {
 		System.out.println(format);
 
 	}
-
 }

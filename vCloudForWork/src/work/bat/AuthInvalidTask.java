@@ -5,7 +5,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import my.VMDetailsMapper;
 import mydata.User;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
@@ -13,6 +18,8 @@ import work.VcdConf;
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class AuthInvalidTask extends Task implements Callable<Void> {
+
+	private static Logger log = LoggerFactory.getLogger(VMDetailsMapper.class);
 
 	public AuthInvalidTask(Controller cont, VcdConf conf) {
 		super();
@@ -42,15 +49,15 @@ public class AuthInvalidTask extends Task implements Callable<Void> {
 		String format = mf.format(new Object[] { vapp.getName(), vapp.getpNo(),
 				vapp.costPerMonth() });
 
-		System.out.println();
-		System.out.println("送付先");
+		log.info("");
+		log.info("送付先");
 		for (String mail : getMailAddress(users)) {
-			System.out.println(mail);
+			log.info(mail);
 		}
-		System.out.println();
-		System.out.println("メール本文");
+		log.info("");
+		log.info("メール本文");
 
-		System.out.println(format);
+		log.info(format);
 
 	}
 

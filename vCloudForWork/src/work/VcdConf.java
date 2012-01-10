@@ -15,5 +15,7 @@ public abstract class VcdConf {
 	public String domainName;
 	public String PnoInvalidTaskTemplatePath;
 	public String AuthInvalidTaskTemplatePath;
+	public String SendCostMailTaskTemplatePath;
+	public String TaskRunDir;
 
 }

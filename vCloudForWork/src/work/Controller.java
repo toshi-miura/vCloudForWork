@@ -106,7 +106,7 @@ public class Controller {
 	}
 
 	/**
-	 * 未認証のアプリのみ返します。
+	 * 未承認のアプリのみ返します。
 	 * @param vcdNamd
 	 * @return
 	 * @throws VCloudException
@@ -126,7 +126,7 @@ public class Controller {
 	}
 
 	/**
-	 * Pno
+	 * Pno不正のマシンのみをとりだす。
 	 * @param vcdNamd
 	 * @return
 	 * @throws VCloudException
