@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import work.bat.BATTestConf;
+import all.TestMgr;
 
 import com.vmware.vcloud.sdk.VCloudException;
 
@@ -23,9 +23,11 @@ public class ControllerTest {
 	@BeforeClass
 	public static void beforClass() throws Exception {
 		try {
-			contoroller = new Controller(
-					new CalcPaymentImpl(new WorkCalcConf()),
-					new ProjCodeCheckerImpl(BATTestConf.PNOFILE));
+
+			contoroller = TestMgr.create(Controller.class);
+
+			// new Controller(new CalcPaymentImpl(new WorkCalcConf()),
+			// new ProjCodeCheckerImpl(new VcdConfImpl()));
 
 		} catch (Exception e) {
 

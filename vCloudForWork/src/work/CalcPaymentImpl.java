@@ -1,14 +1,15 @@
 package work;
 
-
 import base.mydata.VApp;
 
+import com.google.inject.Inject;
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class CalcPaymentImpl implements CalcPayment {
 
 	private final CalcConf conf;
 
+	@Inject
 	public CalcPaymentImpl(CalcConf conf) {
 		this.conf = conf;
 

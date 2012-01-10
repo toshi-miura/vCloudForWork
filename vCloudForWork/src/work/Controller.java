@@ -12,15 +12,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import utconf.Conf;
-
 import base.my.VMDetailsMapper;
 import base.mydata.VApp;
 
+import com.google.inject.Inject;
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class Controller {
@@ -30,9 +29,11 @@ public class Controller {
 	private VMDetailsMapper mapper;
 	private final Executor executor = Executors.newFixedThreadPool(4);
 
-	private final CalcPayment calc;
-	private final ProjCodeChecker checker;
+	private CalcPayment calc = null;
 
+	private ProjCodeChecker checker = null;
+
+	@Inject
 	public Controller(CalcPayment calc, ProjCodeChecker checker) {
 
 		this.calc = calc;
@@ -215,6 +216,22 @@ public class Controller {
 		for (VApp4Work vApp4Work : vappSet) {
 			refreshAsync(vApp4Work);
 		}
+	}
+
+	public CalcPayment getCalc() {
+		return calc;
+	}
+
+	public void setCalc(CalcPayment calc) {
+		this.calc = calc;
+	}
+
+	public ProjCodeChecker getChecker() {
+		return checker;
+	}
+
+	public void setChecker(ProjCodeChecker checker) {
+		this.checker = checker;
 	}
 
 }

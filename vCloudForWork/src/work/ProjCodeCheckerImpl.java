@@ -16,6 +16,8 @@ import jp.sf.orangesignal.csv.handlers.ColumnNameMapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
+
 public class ProjCodeCheckerImpl implements ProjCodeChecker {
 
 	private static Logger log = LoggerFactory
@@ -23,9 +25,10 @@ public class ProjCodeCheckerImpl implements ProjCodeChecker {
 
 	private final String file;
 
-	public ProjCodeCheckerImpl(String file) {
+	@Inject
+	public ProjCodeCheckerImpl(VcdConf vcdConf) {
 		super();
-		this.file = file;
+		this.file = vcdConf.ProjCodeCheckerMasterPath;
 
 		try {
 			read();

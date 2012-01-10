@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import work.bat.BATTestConf;
+import all.TestMgr;
 
 public class ProjCodeTest {
 
@@ -36,13 +36,13 @@ public class ProjCodeTest {
 	@Test
 	public void testMain() throws IOException {
 
-		new ProjCodeCheckerImpl(BATTestConf.PNOFILE);
+		TestMgr.create(ProjCodeChecker.class);
 	}
 
 	@Test
 	public void testMain2() throws IOException {
-		ProjCodeCheckerImpl projCodeChecker = new ProjCodeCheckerImpl(
-				BATTestConf.PNOFILE);
+		ProjCodeCheckerImpl projCodeChecker = TestMgr
+				.create(ProjCodeCheckerImpl.class);
 
 		assertNotNull(projCodeChecker.getProjCodeInfo("LIPJ1104D140"));
 		assertNotNull(projCodeChecker.getProjCodeInfo("LIPJ1104D151"));
@@ -55,8 +55,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain3() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
-				BATTestConf.PNOFILE);
+		ProjCodeCheckerImpl projCodeChecker = TestMgr
+				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2011/05/01");
 		assertTrue(projCodeChecker.valid("LIPJ1104D140", date));
@@ -70,8 +70,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain4() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
-				BATTestConf.PNOFILE);
+		ProjCodeCheckerImpl projCodeChecker = TestMgr
+				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2012/05/01");
 		assertFalse(projCodeChecker.valid("LIPJ1104D140", date));
@@ -85,8 +85,8 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain5() throws IOException {
-		ProjCodeChecker projCodeChecker = new ProjCodeCheckerImpl(
-				BATTestConf.PNOFILE);
+		ProjCodeCheckerImpl projCodeChecker = TestMgr
+				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2011/05/01");
 		assertFalse(projCodeChecker.valid("aaa", date));

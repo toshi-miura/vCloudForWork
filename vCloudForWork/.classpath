@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-servlet-3.0.jar"/>
+	<classpathentry kind="lib" path="/vCloudForJava5/lib/javax.inject.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

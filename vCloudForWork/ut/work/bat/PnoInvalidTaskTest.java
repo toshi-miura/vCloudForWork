@@ -10,12 +10,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import work.CalcPaymentImpl;
 import work.Controller;
-import work.ProjCodeCheckerImpl;
 import work.VApp4Work;
 import work.VcdConfImpl;
-import work.WorkCalcConf;
+import all.TestMgr;
 
 public class PnoInvalidTaskTest {
 
@@ -25,9 +23,7 @@ public class PnoInvalidTaskTest {
 	@BeforeClass
 	public static void beforClass() throws Exception {
 		try {
-			contoroller = new Controller(
-					new CalcPaymentImpl(new WorkCalcConf()),
-					new ProjCodeCheckerImpl(BATTestConf.PNOFILE));
+			contoroller = TestMgr.create(Controller.class);
 
 			pnoInvalidTask = new PnoInvalidTask(contoroller, new VcdConfImpl());
 

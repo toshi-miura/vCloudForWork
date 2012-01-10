@@ -13,6 +13,7 @@ public abstract class VcdConf {
 	public String adBaseDN;
 	public String ldapADsURL;
 	public String domainName;
+	public String ProjCodeCheckerMasterPath;
 	public String PnoInvalidTaskTemplatePath;
 	public String AuthInvalidTaskTemplatePath;
 	public String SendCostMailTaskTemplatePath;
