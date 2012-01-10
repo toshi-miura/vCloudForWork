@@ -13,7 +13,13 @@ import jp.sf.orangesignal.csv.Csv;
 import jp.sf.orangesignal.csv.CsvConfig;
 import jp.sf.orangesignal.csv.handlers.ColumnNameMapListHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ProjCodeCheckerImpl implements ProjCodeChecker {
+
+	private static Logger log = LoggerFactory
+			.getLogger(ProjCodeCheckerImpl.class);
 
 	private final String file;
 
@@ -74,8 +80,8 @@ public class ProjCodeCheckerImpl implements ProjCodeChecker {
 					map.put(info.getProjNo(), info);
 				} else {
 					if (!info.equals(info2)) {
-						System.out.println(info);
-						System.out.println(info2);
+						log.info(info.toString());
+						log.info(info2.toString());
 						throw new IllegalStateException("想定外のデータ形式");
 					}
 				}

@@ -24,5 +24,8 @@
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/slf4j-api-1.6.4.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/guava-11.0.1.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/logback-classic-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/vCloudForJava5/lib/aopalliance.jar"/>
+	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-3.0.jar"/>
+	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-servlet-3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

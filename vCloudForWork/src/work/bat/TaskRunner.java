@@ -5,10 +5,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import work.Controller;
 import work.VcdConf;
 
 public class TaskRunner implements Runnable {
+
+	private static Logger log = LoggerFactory.getLogger(TaskRunner.class);
 
 	protected Controller cont;
 	protected VcdConf conf;

@@ -8,10 +8,16 @@ import java.util.List;
 import java.util.Set;
 
 import mydata.User;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import work.Controller;
 import work.VcdConf;
 
 public class Task {
+
+	private static Logger log = LoggerFactory.getLogger(Task.class);
 
 	protected Controller cont;
 	protected VcdConf conf;

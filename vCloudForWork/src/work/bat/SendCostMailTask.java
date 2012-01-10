@@ -6,6 +6,10 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import mydata.User;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
@@ -21,6 +25,8 @@ import com.vmware.vcloud.sdk.VCloudException;
  */
 public class SendCostMailTask extends Task implements Callable<Void> {
 
+	private static Logger log = LoggerFactory.getLogger(SendCostMailTask.class);
+
 	public SendCostMailTask(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;
@@ -35,10 +41,10 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 
 			List<User> users = vApp4Work.getAllUsers();
 
-			System.out.println("-----------------------");
-			System.out.println(vApp4Work.getName());
+			log.info("-----------------------");
+			log.info(vApp4Work.getName());
 			for (User user : users) {
-				System.out.println(user);
+				log.info(user.toString());
 
 			}
 			sendMail(vApp4Work, users);
@@ -55,12 +61,12 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 		MessageFormat mf = new MessageFormat(temple);
 		String format = mf
 				.format(new String[] { vapp.getName(), vapp.getpNo() });
-		System.out.println("送付先");
+		log.info("送付先");
 		for (String mail : getMailAddress(users)) {
-			System.out.println(mail);
+			log.info(mail);
 		}
-		System.out.println("メール本文");
-		System.out.println(format);
+		log.info("メール本文");
+		log.info(format);
 
 	}
 }

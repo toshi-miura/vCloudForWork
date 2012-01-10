@@ -15,9 +15,14 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Joiner;
 
 public class AD {
+
+	private static Logger log = LoggerFactory.getLogger(AD.class);
 
 	private final String ldapADsPath;
 	private final String domainName;
@@ -98,7 +103,7 @@ public class AD {
 
 		Map<String, List<String>> attr = getAttr(user, pass);
 
-		System.out.println(Joiner.on("\n").join(attr.values()));
+		log.info(Joiner.on("\n").join(attr.values()));
 
 		UserInfo u = new UserInfo(user, pass, attr.get("displayName").get(0),
 				attr.get("telephoneNumber").get(0), attr.get("mail").get(0));
@@ -165,7 +170,7 @@ public class AD {
 
 					entry.put(attribute.getID(), attrValueList);
 
-					// System.out.println(attribute.getID() + "   "
+					// log.info(attribute.getID() + "   "
 					// + attrValueList);
 				}
 

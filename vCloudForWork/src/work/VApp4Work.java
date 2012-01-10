@@ -45,8 +45,31 @@ public class VApp4Work extends VApp {
 	private static final String P_NO = "P_NO";
 	private static final String START_DATE = "START_DATE";
 	private static final String OLD_VAPP_INFO = "OLD_VAPP_INFO";
+	/**
+	 * 更新日時
+	 */
 	private static final String VAPP_UPDATE_DATE_STR = "VAPP_UPDATE_DATE_STR";
+	/**
+	 * MAXコスト
+	 */
 	private static final String MAX_COST = "MAX_COST";
+
+	/**
+	 * MAXコスト時の構成情報
+	 */
+	private static final String MAX_COST_INFO_CPU = "MAX_COST_INFO_CPU";
+	/**
+	 *  MAXコスト時の構成情報
+	 */
+	private static final String MAX_COST_INFO_MEM = "MAX_COST_INFO_MEM";
+	/**
+	 *  MAXコスト時の構成情報
+	 */
+	private static final String MAX_COST_HDD = "MAX_COST_HDD";
+	/**
+	 *  MAXコスト時の構成情報
+	 */
+	private static final String MAX_COST_DATE = "MAX_COST_DATE";
 
 	protected VApp vapp;
 	private final CalcPayment calc;
@@ -196,6 +219,7 @@ public class VApp4Work extends VApp {
 
 	/**
 	 * その月の最大コストを設定します。
+	 * 合わせてその時の構成情報も設定します。
 	 * @return
 	 * @throws VCloudException
 	 */
@@ -205,7 +229,27 @@ public class VApp4Work extends VApp {
 		int costPerMonth = costPerMonth();
 		if (maxCost < costPerMonth) {
 			setMaxCost(costPerMonth);
+
+			setMaxCostCpu(getCpu());
+			setMaxCostMem(getMemorySizeMB());
+			setMaxCostHDD(getTotalHDDGB());
+			setMaxCostDate(toStr(new Date()));
 		}
+
+	}
+
+	public String getMaxCostInfoStr(String separator) throws VCloudException {
+
+		StringBuilder builder = new StringBuilder();
+
+		builder.append(getName()).append(separator);
+		builder.append(getMaxCost()).append(separator);
+		builder.append(getMaxCostCpu()).append(separator);
+		builder.append(getMaxCostMem()).append(separator);
+		builder.append(getMaxCostHDD()).append(separator);
+		builder.append(getMaxCostDate()).append(separator);
+
+		return builder.toString();
 
 	}
 
@@ -226,6 +270,42 @@ public class VApp4Work extends VApp {
 	 */
 	private void setMaxCost(int cost) throws VCloudException {
 		vapp.setMetadataInt(VApp4Work.MAX_COST, cost);
+	}
+
+	public int getMaxCostCpu() throws VCloudException {
+		return vapp.getMetadataInt(MAX_COST_INFO_CPU);
+
+	}
+
+	private void setMaxCostCpu(int pNo) throws VCloudException {
+		vapp.setMetadataInt(VApp4Work.MAX_COST_INFO_CPU, pNo);
+	}
+
+	public int getMaxCostMem() throws VCloudException {
+		return vapp.getMetadataInt(MAX_COST_INFO_MEM);
+
+	}
+
+	private void setMaxCostMem(int pNo) throws VCloudException {
+		vapp.setMetadataInt(VApp4Work.MAX_COST_INFO_MEM, pNo);
+	}
+
+	public int getMaxCostHDD() throws VCloudException {
+		return vapp.getMetadataInt(MAX_COST_HDD);
+
+	}
+
+	private void setMaxCostHDD(int pNo) throws VCloudException {
+		vapp.setMetadataInt(VApp4Work.MAX_COST_HDD, pNo);
+	}
+
+	public String getMaxCostDate() throws VCloudException {
+		return vapp.getMetadataStr(MAX_COST_DATE);
+
+	}
+
+	private void setMaxCostDate(String pNo) throws VCloudException {
+		vapp.setMetadataStr(VApp4Work.MAX_COST_DATE, pNo);
 	}
 
 	public String getpNo() throws VCloudException {

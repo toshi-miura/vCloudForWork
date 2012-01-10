@@ -14,11 +14,17 @@ import java.util.concurrent.TimeUnit;
 
 import my.VMDetailsMapper;
 import mydata.VApp;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import utconf.Conf;
 
 import com.vmware.vcloud.sdk.VCloudException;
 
 public class Controller {
+
+	private static Logger log = LoggerFactory.getLogger(Controller.class);
 
 	private VMDetailsMapper mapper;
 	private final Executor executor = Executors.newFixedThreadPool(4);
@@ -188,7 +194,7 @@ public class Controller {
 			public void run() {
 				try {
 					mapper.refresh(vapp);
-					System.out.println("ASYNC END");
+					log.info("ASYNC END");
 				} catch (VCloudException e) {
 					// TODO
 				}
