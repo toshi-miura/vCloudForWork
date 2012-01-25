@@ -36,6 +36,8 @@ public class Controller {
 	@Inject
 	public Controller(CalcPayment calc, ProjCodeChecker checker) {
 
+		log.info("Controller");
+
 		this.calc = calc;
 		this.checker = checker;
 		init();
@@ -46,6 +48,7 @@ public class Controller {
 
 	public void init() {
 		try {
+			log.info("init");
 			mapper = new VMDetailsMapper(Conf.HOST, Conf.USER, Conf.PASS);
 
 		} catch (KeyManagementException e) {
@@ -69,6 +72,7 @@ public class Controller {
 	public void refresh() {
 		try {
 
+			log.info("refresh");
 			mapper.run();
 			// リフレッシュのタイミングで、VAPPのイニットを走らせる。
 
@@ -88,7 +92,8 @@ public class Controller {
 	}
 
 	/**
-	 *
+	 * 一度のみ呼ぶ。
+	 * スケジューラを使って定期感覚でデータを更新する。
 	 */
 	private void refreshTask() {
 		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
@@ -97,15 +102,36 @@ public class Controller {
 
 			@Override
 			public void run() {
-				init();
+				log.info("refreshTask");
+				refresh();
 
 			}
-		}, 60, 60, TimeUnit.SECONDS);
+		}, 60, 60 * 5, TimeUnit.SECONDS);
 
 	}
 
 	public Set<VApp4Work> getVappSet(String vcdNamd) throws VCloudException {
 		return toWork(mapper.getVappSet(vcdNamd));
+	}
+
+	public int getTotalMemoryGB(String vcdNamd) throws VCloudException {
+		Set<VApp4Work> work = toWork(mapper.getVappSet(vcdNamd));
+		int r = 0;
+		for (VApp4Work vApp4Work : work) {
+			r += vApp4Work.getMemorySizeMB();
+		}
+
+		return r / 1024;
+	}
+
+	public int getTotalHDDGB(String vcdNamd) throws VCloudException {
+		Set<VApp4Work> work = toWork(mapper.getVappSet(vcdNamd));
+		int r = 0;
+		for (VApp4Work vApp4Work : work) {
+			r += vApp4Work.getTotalHDDGB();
+		}
+
+		return r / 1024;
 	}
 
 	public Set<VApp4Work> getVappSetByUser(String vcdNamd, String userid)

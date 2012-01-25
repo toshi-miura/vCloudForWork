@@ -103,7 +103,9 @@ public class AD {
 
 		Map<String, List<String>> attr = getAttr(user, pass);
 
-		log.info(Joiner.on("\n").join(attr.values()));
+		if (log.isDebugEnabled()) {
+			log.debug(Joiner.on("\n").join(attr.values()));
+		}
 
 		UserInfo u = new UserInfo(user, pass, attr.get("displayName").get(0),
 				attr.get("telephoneNumber").get(0), attr.get("mail").get(0));

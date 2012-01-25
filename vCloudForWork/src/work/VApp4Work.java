@@ -5,11 +5,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import base.mydata.User;
 import base.mydata.VApp;
 import base.mydata.VM;
 
+import com.vmware.vcloud.api.rest.schema.ovf.StartupSectionItem;
+import com.vmware.vcloud.api.rest.schema.ovf.StartupSectionType;
 import com.vmware.vcloud.sdk.VCloudException;
 import com.vmware.vcloud.sdk.Vapp;
 
@@ -40,6 +44,8 @@ import com.vmware.vcloud.sdk.Vapp;
  *
  */
 public class VApp4Work extends VApp {
+
+	private static Logger log = LoggerFactory.getLogger(VApp4Work.class);
 
 	private static final String AUTHOR = "AUTHOR";
 	private static final String AUTH_STATUS = "AUTH_STATUS";
@@ -115,6 +121,41 @@ public class VApp4Work extends VApp {
 		// metadataを最後に更新。
 		metadataUpdate();
 
+		setStartUpSection();
+	}
+
+	/**
+	 * スタートアップセクションをゲスト終了にする。
+	 * 電源強制終了対策。
+	 * @throws VCloudException
+	 */
+	public void setStartUpSection() throws VCloudException {
+
+		Vapp vcdVapp = vapp.getVcdVapp();
+		StartupSectionType startUpSection = vcdVapp.getStartUpSection();
+
+		List<StartupSectionItem> item = startUpSection.getItem();
+
+		boolean update = false;
+		for (StartupSectionItem startupSectionItem : item) {
+
+			// 設定文字列は下記。
+			// powerOff
+			// guestShutdown
+
+			// TODO WINDOWSはとか入れたほうがいいかも。Vmware TOOLSが入っていない場合の考慮
+			//
+			if (!startupSectionItem.getStopAction().equals("guestShutdown")) {
+				log.info("★{}", startupSectionItem.getStopAction());
+				startupSectionItem.setStopAction("guestShutdown");
+				update = true;
+			}
+
+		}
+		if (update) {
+			vcdVapp.updateSection(startUpSection);
+		}
+
 	}
 
 	@Override
@@ -129,6 +170,10 @@ public class VApp4Work extends VApp {
 		return vapp.getVcdName();
 	}
 
+	/**
+	 * 更新対象がない場合は更新しない
+	 * @see base.mydata.VApp#metadataUpdate()
+	 */
 	@Override
 	public void metadataUpdate() throws VCloudException {
 		vapp.metadataUpdate();
@@ -150,6 +195,9 @@ public class VApp4Work extends VApp {
 	}
 
 	@Override
+	/**
+	 * 権限を持っている人。オーナーは含まない。
+	 */
 	public List<User> getUsers() {
 		return vapp.getUsers();
 	}
@@ -187,6 +235,10 @@ public class VApp4Work extends VApp {
 	@Override
 	public String toString() {
 		return vapp.toString();
+	}
+
+	public int getVmNum() {
+		return getVmMap().size();
 	}
 
 	@Override
@@ -229,6 +281,12 @@ public class VApp4Work extends VApp {
 		int maxCost = getMaxCost();
 		int costPerMonth = costPerMonth();
 		if (maxCost < costPerMonth) {
+
+			log.info("課金額を更新します。{} - \\ {} >> \\ {}", new Object[] { getName(),
+					maxCost, costPerMonth
+
+			});
+
 			setMaxCost(costPerMonth);
 
 			setMaxCostCpu(getCpu());

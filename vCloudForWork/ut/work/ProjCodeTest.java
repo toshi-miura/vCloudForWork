@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import all.TestMgr;
+import all.InjMgr;
 
 public class ProjCodeTest {
 
@@ -36,12 +36,12 @@ public class ProjCodeTest {
 	@Test
 	public void testMain() throws IOException {
 
-		TestMgr.create(ProjCodeChecker.class);
+		InjMgr.create(ProjCodeChecker.class);
 	}
 
 	@Test
 	public void testMain2() throws IOException {
-		ProjCodeCheckerImpl projCodeChecker = TestMgr
+		ProjCodeCheckerImpl projCodeChecker = InjMgr
 				.create(ProjCodeCheckerImpl.class);
 
 		assertNotNull(projCodeChecker.getProjCodeInfo("LIPJ1104D140"));
@@ -55,7 +55,7 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain3() throws IOException {
-		ProjCodeCheckerImpl projCodeChecker = TestMgr
+		ProjCodeCheckerImpl projCodeChecker = InjMgr
 				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2011/05/01");
@@ -70,7 +70,7 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain4() throws IOException {
-		ProjCodeCheckerImpl projCodeChecker = TestMgr
+		ProjCodeCheckerImpl projCodeChecker = InjMgr
 				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2012/05/01");
@@ -85,7 +85,7 @@ public class ProjCodeTest {
 
 	@Test
 	public void testMain5() throws IOException {
-		ProjCodeCheckerImpl projCodeChecker = TestMgr
+		ProjCodeCheckerImpl projCodeChecker = InjMgr
 				.create(ProjCodeCheckerImpl.class);
 
 		Date date = new Date("2011/05/01");

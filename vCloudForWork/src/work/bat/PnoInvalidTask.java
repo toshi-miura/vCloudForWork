@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
-
 import base.mydata.User;
 
 import com.vmware.vcloud.sdk.VCloudException;
@@ -52,6 +50,7 @@ public class PnoInvalidTask extends Task implements Callable<Void> {
 			}
 			sendMail(vApp4Work, users);
 		}
+		cont.refresh(vappInValidPno);
 
 		return null;
 	}

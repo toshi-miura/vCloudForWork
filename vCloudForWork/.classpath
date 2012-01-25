@@ -28,5 +28,10 @@
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-3.0.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/guice-servlet-3.0.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/javax.inject.jar"/>
+	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/catalina.jar"/>
+	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-api.jar"/>
+	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-jdbc.jar"/>
+	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-util.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

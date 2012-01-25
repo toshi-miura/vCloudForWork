@@ -10,6 +10,8 @@ import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
 
+import com.google.inject.Inject;
+
 /**
  * １日一回、夜間に走る。
  * @author user
@@ -19,6 +21,7 @@ public class MaxCostCheckTask extends Task implements Callable<Void> {
 
 	private static Logger log = LoggerFactory.getLogger(MaxCostCheckTask.class);
 
+	@Inject
 	public MaxCostCheckTask(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;
@@ -33,7 +36,9 @@ public class MaxCostCheckTask extends Task implements Callable<Void> {
 
 			// 現在の構成の値段を取得して、以前の額より上だったら登録
 			vApp4Work.setMaxCost();
+			vApp4Work.metadataUpdate();
 		}
+		cont.refresh(allVapp);
 
 		return null;
 	}

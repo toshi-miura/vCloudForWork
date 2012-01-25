@@ -7,14 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import base.mydata.User;
-
 import work.Controller;
 import work.VcdConf;
+import base.mydata.User;
 
 public class Task {
 
@@ -53,6 +51,12 @@ public class Task {
 
 	}
 
+	/**
+	 * TODO ライブラリのクラスに置き換える。
+	 * ここにあるのが良いかは不明だが、とりあえずここに。
+	 * @param conf
+	 * @return
+	 */
 	public String load(String conf) {
 
 		try (FileInputStream inputStream = new FileInputStream(conf);

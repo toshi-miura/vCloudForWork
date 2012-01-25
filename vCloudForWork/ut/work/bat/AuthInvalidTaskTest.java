@@ -13,7 +13,7 @@ import org.junit.Test;
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConfImpl;
-import all.TestMgr;
+import all.InjMgr;
 
 public class AuthInvalidTaskTest {
 
@@ -23,7 +23,7 @@ public class AuthInvalidTaskTest {
 	@BeforeClass
 	public static void beforClass() throws Exception {
 		try {
-			contoroller = TestMgr.create(Controller.class);
+			contoroller = InjMgr.create(Controller.class);
 
 			pnoInvalidTask = new AuthInvalidTask(contoroller, new VcdConfImpl());
 

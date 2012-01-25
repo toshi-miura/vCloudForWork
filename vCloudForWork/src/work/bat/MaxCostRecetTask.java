@@ -10,6 +10,8 @@ import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
 
+import com.google.inject.Inject;
+
 /**
  * 月末にはしらせる。
  * TODO 結果のログ出力をどうするか・・？
@@ -20,6 +22,7 @@ public class MaxCostRecetTask extends Task implements Callable<Void> {
 
 	private static Logger log = LoggerFactory.getLogger(MaxCostRecetTask.class);
 
+	@Inject
 	public MaxCostRecetTask(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;
@@ -40,7 +43,7 @@ public class MaxCostRecetTask extends Task implements Callable<Void> {
 			vApp4Work.resetMaxCost();
 			vApp4Work.metadataUpdate();
 		}
-
+		cont.refresh(allVapp);
 		log.info("課金情報を出力します。\n{}\n", sb);
 
 		return null;

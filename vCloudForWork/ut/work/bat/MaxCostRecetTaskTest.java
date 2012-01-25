@@ -13,20 +13,20 @@ import org.junit.Test;
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConfImpl;
-import all.TestMgr;
+import all.InjMgr;
 
 public class MaxCostRecetTaskTest {
 
 	private static Controller contoroller;
-	private static MaxCostRecetTask pnoInvalidTask;
+	private static MaxCostRecetTask reset;
 	private static MaxCostCheckTask checkTask;
 
 	@BeforeClass
 	public static void beforClass() throws Exception {
 		try {
-			contoroller = TestMgr.create(Controller.class);
+			contoroller = InjMgr.create(Controller.class);
 
-			pnoInvalidTask = new MaxCostRecetTask(contoroller,
+			reset = new MaxCostRecetTask(contoroller,
 					new VcdConfImpl());
 			checkTask = new MaxCostCheckTask(contoroller, new VcdConfImpl());
 
@@ -56,7 +56,7 @@ public class MaxCostRecetTaskTest {
 
 	@Test
 	public void testCall() throws Exception {
-		pnoInvalidTask.call();
+		reset.call();
 		checkTask.call();
 	}
 

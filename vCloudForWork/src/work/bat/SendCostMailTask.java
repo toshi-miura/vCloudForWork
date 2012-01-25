@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
-
+import work.util.InjMgr;
 import base.mydata.User;
 
+import com.google.inject.Inject;
 import com.vmware.vcloud.sdk.VCloudException;
 
 /**
@@ -28,6 +28,7 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 
 	private static Logger log = LoggerFactory.getLogger(SendCostMailTask.class);
 
+	@Inject
 	public SendCostMailTask(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;
@@ -36,6 +37,9 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 
 	@Override
 	public Void call() throws Exception {
+
+		// コストチェックを事前に呼んでおく。
+		InjMgr.create(MaxCostCheckTask.class).call();
 
 		Set<VApp4Work> allVapp = cont.getVappSet(conf.vcdName);
 		for (VApp4Work vApp4Work : allVapp) {
@@ -50,6 +54,7 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 			}
 			sendMail(vApp4Work, users);
 		}
+		cont.refresh(allVapp);
 
 		return null;
 	}
@@ -60,8 +65,11 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 		String temple = load(conf.SendCostMailTaskTemplatePath);
 
 		MessageFormat mf = new MessageFormat(temple);
-		String format = mf
-				.format(new String[] { vapp.getName(), vapp.getpNo() });
+		String format = mf.format(new Object[] { vapp.getName(), vapp.getpNo(),
+				vapp.getMaxCost(), vapp.getMaxCostCpu(), vapp.getMaxCostMem(),
+				vapp.getMaxCostHDD(), vapp.getMaxCostDate()
+
+		});
 		log.info("送付先");
 		for (String mail : getMailAddress(users)) {
 			log.info(mail);
