@@ -46,18 +46,23 @@ public class TaskRunner implements Runnable {
 		String dir = this.conf.TaskRunDir;
 		File[] listFiles = new File(dir).listFiles();
 
-		log.info("run TaskSize:{}", listFiles.length);
+		log.info("run TaskFileSize:{}", listFiles.length);
 
 		for (File file : listFiles) {
 			try (BufferedReader bf = new BufferedReader(new FileReader(file))) {
-				String line = bf.readLine();
-				Class cls = Class.forName(line);
+				String line = null;
+				while ((line = bf.readLine()) != null) {
 
-				// 非同期化できるように、タスクはCallableで使っている。
+					log.info("read TaskName:{}", line);
+					Class cls = Class.forName(line);
 
-				Object task = InjMgr.create(cls);
-				if (task instanceof Callable) {
-					((Callable) task).call();
+					// 非同期化できるように、タスクはCallableで使っている。
+
+					Object task = InjMgr.create(cls);
+					if (task instanceof Callable) {
+						log.info("run  TaskName:{}", line);
+						((Callable) task).call();
+					}
 				}
 
 			} catch (IOException e) {

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +14,7 @@ import work.Controller;
 import work.VApp4Work;
 import work.VcdConf;
 import work.util.InjMgr;
+import work.util.Sender;
 import base.mydata.User;
 
 import com.google.inject.Inject;
@@ -60,7 +63,7 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 	}
 
 	private void sendMail(VApp4Work vapp, List<User> users)
-			throws VCloudException {
+			throws VCloudException, MessagingException {
 
 		String temple = load(conf.SendCostMailTaskTemplatePath);
 
@@ -75,7 +78,17 @@ public class SendCostMailTask extends Task implements Callable<Void> {
 			log.info(mail);
 		}
 		log.info("メール本文");
-		log.info(format);
+
+		int firstline = format.indexOf("\n");
+		String title = format.substring(0, firstline);
+		String body = format.substring(firstline, format.length());
+
+		log.info("title={}", title);
+		log.info(body);
+
+		Sender sender = InjMgr.create(Sender.class);
+		sender.sendMail(getMailAddress(users), title, body,
+				"toshihiko.miura+program@gmail.com");
 
 	}
 }
