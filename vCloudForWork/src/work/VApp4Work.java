@@ -12,6 +12,7 @@ import base.mydata.User;
 import base.mydata.VApp;
 import base.mydata.VM;
 
+import com.google.common.base.Strings;
 import com.vmware.vcloud.api.rest.schema.ovf.StartupSectionItem;
 import com.vmware.vcloud.api.rest.schema.ovf.StartupSectionType;
 import com.vmware.vcloud.sdk.VCloudException;
@@ -38,6 +39,8 @@ import com.vmware.vcloud.sdk.Vapp;
  * 導出項目
  * - 現在予定課金額
  *
+ * 追加項目は、vCloudのvAppのメタデータとして定義
+ *
  *
  *
  * @author user
@@ -47,8 +50,15 @@ public class VApp4Work extends VApp {
 
 	private static Logger log = LoggerFactory.getLogger(VApp4Work.class);
 
-	private static final String AUTHOR = "AUTHOR";
-	private static final String AUTH_STATUS = "AUTH_STATUS";
+	enum AUTH_STATUS {
+		BEFORE_INPUT_PNO, DONOT_HAVA_AUTHER, BEFORE_AUTH, AUTH, NEED_UPDATE
+
+	};
+
+	private static final String AUTHOR1 = "AUTHOR1";
+	private static final String AUTHOR2 = "AUTHOR2";
+	private static final String AUTH_STATUS1 = "AUTH_STATUS";
+	private static final String AUTH_STATUS2 = "AUTH_STATUS";
 	private static final String P_NO = "P_NO";
 	private static final String START_DATE = "START_DATE";
 	private static final String OLD_VAPP_INFO = "OLD_VAPP_INFO";
@@ -117,6 +127,26 @@ public class VApp4Work extends VApp {
 				setStartDate(toStr(new Date()));
 			}
 		}
+		{
+			String pno = getpNo();
+
+			if (!(pno != null && pno.equals(""))) {
+
+				setAuthStatus1(AUTH_STATUS.BEFORE_INPUT_PNO);
+				setAuthStatus2(AUTH_STATUS.BEFORE_INPUT_PNO);
+
+			} else {
+
+				String auther1 = getAuthor1();
+				if (auther1 == null) {
+					setAuthStatus1(AUTH_STATUS.DONOT_HAVA_AUTHER);
+				}
+				String auther2 = getAuthor2();
+				if (auther2 == null) {
+					setAuthStatus2(AUTH_STATUS.DONOT_HAVA_AUTHER);
+				}
+			}
+		}
 
 		// metadataを最後に更新。
 		metadataUpdate();
@@ -146,7 +176,8 @@ public class VApp4Work extends VApp {
 			// TODO WINDOWSはとか入れたほうがいいかも。Vmware TOOLSが入っていない場合の考慮
 			//
 			if (!startupSectionItem.getStopAction().equals("guestShutdown")) {
-				log.info("★{}", startupSectionItem.getStopAction());
+				log.info("startupMode  {}=>guestShutdown ",
+						startupSectionItem.getStopAction());
 				startupSectionItem.setStopAction("guestShutdown");
 				update = true;
 			}
@@ -220,8 +251,8 @@ public class VApp4Work extends VApp {
 	@Override
 	public String toBaseString() {
 		try {
-			return vapp.toBaseString() + "\t" + "Author:	" + getAuthor() + "\t"
-					+ "pNo:	" + getpNo() + "\t" + "StartDate:	"
+			return vapp.toBaseString() + "\t" + "Author:	" + getAuthor1()
+					+ "\t" + "pNo:	" + getpNo() + "\t" + "StartDate:	"
 					+ getStartDate() + "\t" + "costPerMonth:	" + costPerMonth()
 					+ "\t" + "updateDate:	" + getVappUpdateDateStr();
 
@@ -251,13 +282,29 @@ public class VApp4Work extends VApp {
 		return vapp.hashCode();
 	}
 
-	public String getAuthor() throws VCloudException {
+	public String getAuthor1() throws VCloudException {
 
-		return vapp.getMetadataStr(AUTHOR);
+		return vapp.getMetadataStr(AUTHOR1);
 	}
 
-	public void setAuthor(String author) throws VCloudException {
-		vapp.setMetadataStr(VApp4Work.AUTHOR, author);
+	public void setAuthor1(String author) throws VCloudException {
+
+		if (!author.equals(getAuthor1())) {
+			setAuthStatus1(AUTH_STATUS.BEFORE_AUTH);
+			vapp.setMetadataStr(VApp4Work.AUTHOR1, author);
+		}
+	}
+
+	public String getAuthor2() throws VCloudException {
+
+		return vapp.getMetadataStr(AUTHOR2);
+	}
+
+	public void setAuthor2(String author) throws VCloudException {
+		if (!author.equals(getAuthor2())) {
+			setAuthStatus2(AUTH_STATUS.BEFORE_AUTH);
+			vapp.setMetadataStr(VApp4Work.AUTHOR2, author);
+		}
 	}
 
 	/**
@@ -373,7 +420,28 @@ public class VApp4Work extends VApp {
 	}
 
 	public void setpNo(String pNo) throws VCloudException {
-		vapp.setMetadataStr(VApp4Work.P_NO, pNo);
+
+		if (!(pNo.equals(getpNo()))) {
+
+			if (Strings.isNullOrEmpty(pNo)) {
+
+				if (Strings.isNullOrEmpty(getAuthor1())) {
+					setAuthStatus1(AUTH_STATUS.DONOT_HAVA_AUTHER);
+				} else {
+					setAuthStatus1(AUTH_STATUS.BEFORE_AUTH);
+				}
+
+				if (Strings.isNullOrEmpty(getAuthor2())) {
+					setAuthStatus2(AUTH_STATUS.DONOT_HAVA_AUTHER);
+				} else {
+					setAuthStatus2(AUTH_STATUS.BEFORE_AUTH);
+				}
+
+				vapp.setMetadataStr(VApp4Work.P_NO, pNo);
+
+			}
+
+		}
 	}
 
 	public String getStartDate() throws VCloudException {
@@ -381,25 +449,33 @@ public class VApp4Work extends VApp {
 
 	}
 
+	public boolean isAuthStatus() throws VCloudException {
+		return (getAuthStatus1() == AUTH_STATUS.AUTH)
+				&& ((getAuthStatus2() == AUTH_STATUS.AUTH) || (getAuthStatus2() == AUTH_STATUS.DONOT_HAVA_AUTHER));
+
+	}
+
 	private void setStartDate(String startDate) throws VCloudException {
 		vapp.setMetadataStr(START_DATE, startDate);
 	}
 
-	public boolean isAuthStatus() throws VCloudException {
-		return Boolean.valueOf(getAuthStatus());
+	public void setAuthStatus1(AUTH_STATUS authStatus) throws VCloudException {
+		vapp.setMetadataStr(AUTH_STATUS1, authStatus.name());
 	}
 
-	public void setAuthStatus(boolean b) throws VCloudException {
-		setAuthStatus(Boolean.toString(b));
-	}
-
-	private String getAuthStatus() throws VCloudException {
-		return vapp.getMetadataStr(AUTH_STATUS);
+	public AUTH_STATUS getAuthStatus1() throws VCloudException {
+		return AUTH_STATUS.valueOf(vapp.getMetadataStr(AUTH_STATUS1));
 
 	}
 
-	private void setAuthStatus(String authStatus) throws VCloudException {
-		vapp.setMetadataStr(AUTH_STATUS, authStatus);
+	public void setAuthStatus2(AUTH_STATUS authStatus) throws VCloudException {
+
+		vapp.setMetadataStr(AUTH_STATUS2, authStatus.name());
+	}
+
+	public AUTH_STATUS getAuthStatus2() throws VCloudException {
+		return AUTH_STATUS.valueOf(vapp.getMetadataStr(AUTH_STATUS2));
+
 	}
 
 	// ----------------

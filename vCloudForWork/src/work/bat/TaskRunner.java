@@ -49,8 +49,9 @@ public class TaskRunner implements Runnable {
 		log.info("run TaskFileSize:{}", listFiles.length);
 
 		for (File file : listFiles) {
+			String line = null;
 			try (BufferedReader bf = new BufferedReader(new FileReader(file))) {
-				String line = null;
+
 				while ((line = bf.readLine()) != null) {
 
 					log.info("read TaskName:{}", line);
@@ -66,15 +67,20 @@ public class TaskRunner implements Runnable {
 				}
 
 			} catch (IOException e) {
-				log.info("", e);
+				log.info("GUICEエラー file={},line={}",
+						new Object[] { file, line }, e);
 			} catch (InstantiationException e) {
-				log.info("", e);
+				log.info("GUICEエラー file={},line={}",
+						new Object[] { file, line }, e);
 			} catch (IllegalAccessException e) {
-				log.info("", e);
+				log.info("GUICEエラー file={},line={}",
+						new Object[] { file, line }, e);
 			} catch (ClassNotFoundException e) {
-				log.info("", e);
+				log.info("GUICEエラー file={},line={}",
+						new Object[] { file, line }, e);
 			} catch (Exception e) {
-				log.info("", e);
+				log.info("GUICEエラー file={},line={}",
+						new Object[] { file, line }, e);
 			}
 
 			file.delete();

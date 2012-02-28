@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import work.VApp4Work.AUTH_STATUS;
 import all.InjMgr;
 
 import com.vmware.vcloud.sdk.VCloudException;
@@ -77,7 +78,7 @@ public class ControllerTest {
 		System.out.println("-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("★★俺が承認者だ！！");
+			vApp4Work.setAuthor1("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
 			vApp4Work.metadataUpdate();
@@ -103,7 +104,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("");
+			vApp4Work.setAuthor1("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
 			System.out.println("...");
@@ -148,7 +149,7 @@ public class ControllerTest {
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("★★俺が承認者だ！！");
+			vApp4Work.setAuthor1("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
 			vApp4Work.metadataUpdate();
@@ -168,7 +169,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("");
+			vApp4Work.setAuthor1("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
 
@@ -208,7 +209,7 @@ public class ControllerTest {
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("★★俺が承認者だ！！");
+			vApp4Work.setAuthor1("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
 			vApp4Work.metadataUpdate();
@@ -234,7 +235,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("");
+			vApp4Work.setAuthor1("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
 
@@ -272,7 +273,7 @@ public class ControllerTest {
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("★★俺が承認者だ！！");
+			vApp4Work.setAuthor1("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
 			vApp4Work.metadataUpdate();
@@ -299,7 +300,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("");
+			vApp4Work.setAuthor1("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
 
@@ -337,7 +338,7 @@ public class ControllerTest {
 				.println("update-------------------------------------------------");
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("★★俺が承認者だ！！");
+			vApp4Work.setAuthor1("★★俺が承認者だ！！");
 			vApp4Work.setpNo("★★P#01101");
 
 			vApp4Work.metadataUpdate();
@@ -364,7 +365,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthor("");
+			vApp4Work.setAuthor1("");
 			vApp4Work.setpNo("");
 			vApp4Work.metadataUpdate();
 
@@ -447,9 +448,13 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthStatus(true);
+			vApp4Work.setAuthStatus1(AUTH_STATUS.BEFORE_AUTH);
+			vApp4Work.setAuthStatus2(AUTH_STATUS.BEFORE_AUTH);
+
 			vApp4Work.setpNo("LIPJ10030678");
 			vApp4Work.metadataUpdate();
+
+			assertEquals(false, vApp4Work.isAuthStatus());
 		}
 
 		vappSet = contoroller.refresh(vappSet);
@@ -485,6 +490,13 @@ public class ControllerTest {
 		assertEquals(vappSet2.size(), 5);
 	}
 
+	/**
+	 *
+	 * 何がNGなのか？？
+	 * @deprecated
+	 * @throws VCloudException
+	 */
+	@Deprecated
 	@Test
 	public void testNGな設定() throws VCloudException {
 
@@ -495,7 +507,7 @@ public class ControllerTest {
 
 		for (VApp4Work vApp4Work : vappSet) {
 
-			vApp4Work.setAuthStatus(false);
+			vApp4Work.setAuthStatus1(AUTH_STATUS.DONOT_HAVA_AUTHER);
 			vApp4Work.setpNo("DUMMY");
 			vApp4Work.metadataUpdate();
 		}

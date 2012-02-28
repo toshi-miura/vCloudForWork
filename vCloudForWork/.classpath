@@ -16,6 +16,7 @@
 	<classpathentry kind="lib" path="libs/mailapi.jar"/>
 	<classpathentry kind="lib" path="libs/pop3.jar"/>
 	<classpathentry kind="lib" path="libs/smtp.jar"/>
+	<classpathentry kind="lib" path="libs/doma-1.21.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/amqp-client-2.3.1.jar"/>
 	<classpathentry kind="lib" path="/vCloudForJava5/lib/commons-codec-1.4.jar"/>
@@ -38,5 +39,10 @@
 	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-api.jar"/>
 	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="C:/data/programs/apache-tomcat-7.0.23/lib/tomcat-util.jar"/>
+	<classpathentry kind="src" path="apt_generated">
+		<attributes>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

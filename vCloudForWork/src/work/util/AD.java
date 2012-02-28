@@ -20,6 +20,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 
+/**
+ * AD検索用のユーティル。
+ * 社員番号からの「名前」「メールアドレス」「電話番号」
+ * 等の検索に使用
+ *
+ * @author user
+ *
+ */
 public class AD {
 
 	private static Logger log = LoggerFactory.getLogger(AD.class);
@@ -27,12 +35,14 @@ public class AD {
 	private final String ldapADsPath;
 	private final String domainName;
 	private final String baseDn;
+	private final String query;
 
-	public AD(String ldapADsPath, String domainName, String baseDN) {
+	public AD(String ldapADsPath, String domainName, String baseDN, String query) {
 		super();
 		this.ldapADsPath = ldapADsPath;
 		this.domainName = domainName;
 		this.baseDn = baseDN;
+		this.query = query;
 
 	}
 
@@ -107,10 +117,29 @@ public class AD {
 			log.debug(Joiner.on("\n").join(attr.values()));
 		}
 
-		UserInfo u = new UserInfo(user, pass, attr.get("displayName").get(0),
-				attr.get("telephoneNumber").get(0), attr.get("mail").get(0));
+		String name = "";
+		String s = head(attr.get("displayName"));
+		if (s != null && !s.equals("")) {
+			name = s;
+		}
+		String s2 = head(attr.get("sn"));
+		if (s2 != null && !s2.equals("")) {
+			name = s2;
+		}
+
+		UserInfo u = new UserInfo(user, pass, name, attr.get("telephoneNumber")
+				.get(0), attr.get("mail").get(0));
 
 		return u;
+
+	}
+
+	private String head(List<String> attr) {
+		if (attr != null && attr.size() > 0) {
+			return attr.get(0);
+		} else {
+			return null;
+		}
 
 	}
 
@@ -142,7 +171,8 @@ public class AD {
 
 			// String baseDn = "CN=Users,DC=vm,DC=local";
 
-			String filter = "sn=" + user;
+			// 環境によって異なる
+			String filter = query + "=" + user;
 
 			SearchControls searchControls = new SearchControls();
 			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);

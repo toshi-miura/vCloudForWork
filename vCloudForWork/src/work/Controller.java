@@ -51,20 +51,15 @@ public class Controller {
 			log.info("init");
 			mapper = new VMDetailsMapper(Conf.HOST, Conf.USER, Conf.PASS);
 
-		} catch (KeyManagementException e) {
+		} catch (KeyManagementException | VCloudException
+				| UnrecoverableKeyException | NoSuchAlgorithmException
+				| KeyStoreException
 
-			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
+		e) {
 
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
+			log.error("初期化、ログインにてエラーが発生しました。{}:{}:{}",
 
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-
-			e.printStackTrace();
-		} catch (VCloudException e) {
-
+			new String[] { Conf.HOST, Conf.USER, Conf.PASS });
 			e.printStackTrace();
 		}
 	}
@@ -106,7 +101,7 @@ public class Controller {
 				refresh();
 
 			}
-		}, 60, 60 * 5, TimeUnit.SECONDS);
+		}, 60, 60 * 1, TimeUnit.SECONDS);
 
 	}
 

@@ -12,6 +12,7 @@ import work.WorkCalcConf;
 import work.bat.MaxCostCheckTask;
 import work.bat.MaxCostRecetTask;
 import work.bat.SendCostMailTask;
+import work.util.Sender;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -31,6 +32,8 @@ public class TestModule extends AbstractModule {
 		bind(MaxCostCheckTask.class);
 		bind(MaxCostRecetTask.class);
 		bind(SendCostMailTask.class);
+		bind(Sender.class).in(Scopes.SINGLETON);
+		;
 
 	}
 }
