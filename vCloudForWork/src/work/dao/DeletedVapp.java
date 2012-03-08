@@ -29,6 +29,8 @@ public class DeletedVapp {
 	 */
 	public Date deleteDate;
 
+	public int vmNum;
+
 	/**
 	 *
 	 */
@@ -48,6 +50,11 @@ public class DeletedVapp {
 	 *
 	 */
 	public int lastMaxCost;
+
+	/**
+	 *
+	 */
+	public String pNo;
 
 	/**
 	 *

@@ -23,6 +23,7 @@ public class InjMgr {
 	}
 
 	public static <T> T create(Class<T> cls) {
+
 		return injector.getInstance(cls);
 	}
 

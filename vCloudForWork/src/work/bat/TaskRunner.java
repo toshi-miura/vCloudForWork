@@ -15,8 +15,6 @@ import work.Controller;
 import work.VcdConf;
 import work.util.InjMgr;
 
-import com.google.inject.Inject;
-
 public class TaskRunner implements Runnable {
 
 	private static Logger log = LoggerFactory.getLogger(TaskRunner.class);
@@ -24,16 +22,17 @@ public class TaskRunner implements Runnable {
 	protected Controller cont;
 	protected VcdConf conf;
 
-	public static void starTaskRunnert() {
+	public static void starTaskRunnert(Controller controller) {
 		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
 				1);
-		TaskRunner runner = InjMgr.create(TaskRunner.class);
+
+		TaskRunner runner = new TaskRunner(controller,
+				InjMgr.create(VcdConf.class));
 
 		executor.scheduleWithFixedDelay(runner, 60, 60, TimeUnit.SECONDS);
 
 	}
 
-	@Inject
 	public TaskRunner(Controller cont, VcdConf conf) {
 		super();
 		this.cont = cont;

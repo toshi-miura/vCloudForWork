@@ -50,8 +50,45 @@ public class VApp4Work extends VApp {
 
 	private static Logger log = LoggerFactory.getLogger(VApp4Work.class);
 
-	enum AUTH_STATUS {
-		BEFORE_INPUT_PNO, DONOT_HAVA_AUTHER, BEFORE_AUTH, AUTH, NEED_UPDATE
+	public enum AUTH_STATUS {
+		BEFORE_INPUT_PNO("Pno未入力"), DONOT_HAVA_AUTHER("承認者未入力"), BEFORE_AUTH(
+				"未承認"), AUTH("承認済み"), NEED_UPDATE("要再承認");
+
+		private String viewName;
+
+		AUTH_STATUS(String name) {
+			this.viewName = name;
+
+		}
+
+		public String getViewName() {
+			return viewName;
+		}
+
+		/**
+		 * ステータスを二つ参照し、総合したステータスを返す。
+		 * @param otherStatus
+		 * @return
+		 */
+		public AUTH_STATUS isStatus(AUTH_STATUS otherStatus) {
+
+			if (this != DONOT_HAVA_AUTHER && otherStatus != DONOT_HAVA_AUTHER) {
+				if (this.ordinal() < otherStatus.ordinal()) {
+					return this;
+				} else {
+					return otherStatus;
+				}
+			} else {
+
+				if (this != DONOT_HAVA_AUTHER) {
+					return otherStatus;
+				} else {
+					return this;
+				}
+
+			}
+
+		}
 
 	};
 
@@ -130,7 +167,9 @@ public class VApp4Work extends VApp {
 		{
 			String pno = getpNo();
 
-			if (!(pno != null && pno.equals(""))) {
+			if (Strings.isNullOrEmpty(pno)) {
+
+				log.info("{}の状態の初期化をします。（PNOが空）", getName());
 
 				setAuthStatus1(AUTH_STATUS.BEFORE_INPUT_PNO);
 				setAuthStatus2(AUTH_STATUS.BEFORE_INPUT_PNO);
@@ -138,11 +177,14 @@ public class VApp4Work extends VApp {
 			} else {
 
 				String auther1 = getAuthor1();
-				if (auther1 == null) {
+				if (Strings.isNullOrEmpty(auther1)) {
+					log.info("{}の状態の承認者１未承認にします。（PNOが空）", getName());
 					setAuthStatus1(AUTH_STATUS.DONOT_HAVA_AUTHER);
 				}
 				String auther2 = getAuthor2();
-				if (auther2 == null) {
+				if (Strings.isNullOrEmpty(auther2)) {
+
+					log.info("{}の状態の承認者２未承認にします。（PNOが空）", getName());
 					setAuthStatus2(AUTH_STATUS.DONOT_HAVA_AUTHER);
 				}
 			}
@@ -161,30 +203,35 @@ public class VApp4Work extends VApp {
 	 */
 	public void setStartUpSection() throws VCloudException {
 
-		Vapp vcdVapp = vapp.getVcdVapp();
-		StartupSectionType startUpSection = vcdVapp.getStartUpSection();
+		try {
+			Vapp vcdVapp = vapp.getVcdVapp();
+			StartupSectionType startUpSection = vcdVapp.getStartUpSection();
 
-		List<StartupSectionItem> item = startUpSection.getItem();
+			List<StartupSectionItem> item = startUpSection.getItem();
 
-		boolean update = false;
-		for (StartupSectionItem startupSectionItem : item) {
+			boolean update = false;
+			for (StartupSectionItem startupSectionItem : item) {
 
-			// 設定文字列は下記。
-			// powerOff
-			// guestShutdown
+				// 設定文字列は下記。
+				// powerOff
+				// guestShutdown
 
-			// TODO WINDOWSはとか入れたほうがいいかも。Vmware TOOLSが入っていない場合の考慮
-			//
-			if (!startupSectionItem.getStopAction().equals("guestShutdown")) {
-				log.info("startupMode  {}=>guestShutdown ",
-						startupSectionItem.getStopAction());
-				startupSectionItem.setStopAction("guestShutdown");
-				update = true;
+				// TODO WINDOWSはとか入れたほうがいいかも。Vmware TOOLSが入っていない場合の考慮
+				//
+				if (!startupSectionItem.getStopAction().equals("guestShutdown")) {
+					log.info("startupMode  {}=>guestShutdown ",
+							startupSectionItem.getStopAction());
+					startupSectionItem.setStopAction("guestShutdown");
+					update = true;
+				}
+
 			}
+			if (update) {
+				vcdVapp.updateSection(startUpSection);
+			}
+		} catch (VCloudException e) {
+			log.warn("スタートアップセクションの書き換えに失敗しました。{}", getName());
 
-		}
-		if (update) {
-			vcdVapp.updateSection(startUpSection);
 		}
 
 	}
@@ -449,9 +496,16 @@ public class VApp4Work extends VApp {
 
 	}
 
-	public boolean isAuthStatus() throws VCloudException {
-		return (getAuthStatus1() == AUTH_STATUS.AUTH)
-				&& ((getAuthStatus2() == AUTH_STATUS.AUTH) || (getAuthStatus2() == AUTH_STATUS.DONOT_HAVA_AUTHER));
+	/**
+	 *
+	 * @return
+	 * @throws VCloudException
+	 */
+	public AUTH_STATUS getAuthStatus() throws VCloudException {
+		AUTH_STATUS status1 = getAuthStatus1();
+		AUTH_STATUS status2 = getAuthStatus2();
+
+		return status1.isStatus(status2);
 
 	}
 
@@ -464,7 +518,9 @@ public class VApp4Work extends VApp {
 	}
 
 	public AUTH_STATUS getAuthStatus1() throws VCloudException {
-		return AUTH_STATUS.valueOf(vapp.getMetadataStr(AUTH_STATUS1));
+
+		String str = vapp.getMetadataStr(AUTH_STATUS1);
+		return AUTH_STATUS.valueOf(str);
 
 	}
 
@@ -474,7 +530,8 @@ public class VApp4Work extends VApp {
 	}
 
 	public AUTH_STATUS getAuthStatus2() throws VCloudException {
-		return AUTH_STATUS.valueOf(vapp.getMetadataStr(AUTH_STATUS2));
+		String str = vapp.getMetadataStr(AUTH_STATUS2);
+		return AUTH_STATUS.valueOf(str);
 
 	}
 
@@ -506,6 +563,46 @@ public class VApp4Work extends VApp {
 
 	public int costPerMonth() throws VCloudException {
 		return calc.calc(this);
+	}
+
+	@Override
+	public String getMetadataStr(String k) throws VCloudException {
+		return vapp.getMetadataStr(k);
+	}
+
+	@Override
+	public int getMetadataInt(String k) throws VCloudException {
+		return vapp.getMetadataInt(k);
+	}
+
+	@Override
+	public void setMetadataStr(String k, String val) throws VCloudException {
+		vapp.setMetadataStr(k, val);
+	}
+
+	@Override
+	public String getID() throws VCloudException {
+		return vapp.getID();
+	}
+
+	@Override
+	public void setMetadataInt(String k, int val) throws VCloudException {
+		vapp.setMetadataInt(k, val);
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+		return vapp.getAllUsers();
+	}
+
+	@Override
+	public List<String> getAllMailAddress() {
+		return vapp.getAllMailAddress();
+	}
+
+	@Override
+	public String toBaseSimpleInfo() {
+		return vapp.toBaseSimpleInfo();
 	}
 
 }

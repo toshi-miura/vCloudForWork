@@ -1,21 +1,24 @@
 package work;
 
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.seasar.doma.jdbc.tx.LocalTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import utconf.Conf;
+import work.VApp4Work.AUTH_STATUS;
+import work.dao.DeletedVapp;
+import work.dao.DeletedVappDao;
+import work.dao.DeletedVappDaoImpl;
+import work.util.InjMgr;
+import base.dao.AppConfig;
 import base.my.VMDetailsMapper;
 import base.mydata.VApp;
 
@@ -27,7 +30,8 @@ public class Controller {
 	private static Logger log = LoggerFactory.getLogger(Controller.class);
 
 	private VMDetailsMapper mapper;
-	private final Executor executor = Executors.newFixedThreadPool(4);
+	private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
+			1);
 
 	private CalcPayment calc = null;
 
@@ -36,7 +40,7 @@ public class Controller {
 	@Inject
 	public Controller(CalcPayment calc, ProjCodeChecker checker) {
 
-		log.info("Controller");
+		log.info("Controller:" + this);
 
 		this.calc = calc;
 		this.checker = checker;
@@ -49,18 +53,17 @@ public class Controller {
 	public void init() {
 		try {
 			log.info("init");
-			mapper = new VMDetailsMapper(Conf.HOST, Conf.USER, Conf.PASS);
+			// mapper = new VMDetailsMapper(Conf.HOST, Conf.USER, Conf.PASS);
 
-		} catch (KeyManagementException | VCloudException
-				| UnrecoverableKeyException | NoSuchAlgorithmException
-				| KeyStoreException
+			mapper = InjMgr.create(VMDetailsMapper.class);
+
+		} catch (Exception
 
 		e) {
 
-			log.error("初期化、ログインにてエラーが発生しました。{}:{}:{}",
+			log.error("初期化、ログインにてエラーが発生しました。");
+			log.error("エラー詳細", e);
 
-			new String[] { Conf.HOST, Conf.USER, Conf.PASS });
-			e.printStackTrace();
 		}
 	}
 
@@ -79,11 +82,11 @@ public class Controller {
 
 		} catch (VCloudException e) {
 
-			e.printStackTrace();
+			log.error("再接続を実施します。", e);
 			// エラーが出たら、とりあえず、再接続
 			init();
-		}
 
+		}
 	}
 
 	/**
@@ -91,14 +94,20 @@ public class Controller {
 	 * スケジューラを使って定期感覚でデータを更新する。
 	 */
 	private void refreshTask() {
-		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(
-				1);
+
 		executor.scheduleWithFixedDelay(new Runnable() {
 
 			@Override
 			public void run() {
-				log.info("refreshTask");
-				refresh();
+				log.info("■refreshTask:" + this);
+
+				try {
+					refresh();
+				} catch (Exception e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+				log.info("■refreshTask-end:" + this);
 
 			}
 		}, 60, 60 * 1, TimeUnit.SECONDS);
@@ -147,7 +156,7 @@ public class Controller {
 		Set<VApp4Work> result = new HashSet<VApp4Work>();
 
 		for (VApp4Work vApp4Work : work) {
-			if (!vApp4Work.isAuthStatus()) {
+			if (vApp4Work.getAuthStatus() != AUTH_STATUS.AUTH) {
 				result.add(vApp4Work);
 			}
 		}
@@ -186,10 +195,40 @@ public class Controller {
 		return result;
 	}
 
+	/**
+
+	 * @param vcdNamd
+	 * @return
+	 * @throws VCloudException
+	 */
+	public List<DeletedVapp> getDeletedVappByUser(String vcdNamd,
+			String userid, Calendar cal) throws VCloudException {
+
+		List<DeletedVapp> selectByUserID = new ArrayList<>();
+		LocalTransaction tx = AppConfig.getLocalTransaction();
+		try {
+			// トランザクションの開始
+			tx.begin();
+
+			DeletedVappDao vApppDao = new DeletedVappDaoImpl();
+
+			selectByUserID = vApppDao.selectByUserID(userid);
+
+			tx.commit();
+		} finally {
+			// トランザクションのロールバック
+			tx.rollback();
+		}
+
+		return selectByUserID;
+	}
+
 	private Set<VApp4Work> toWork(Set<VApp> vappSet) throws VCloudException {
 		Set<VApp4Work> vapp4workSet = new HashSet<VApp4Work>();
 		for (VApp vApp : vappSet) {
+
 			vapp4workSet.add(new VApp4Work(vApp, this.calc));
+
 		}
 		return vapp4workSet;
 	}

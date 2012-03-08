@@ -19,6 +19,8 @@ public interface DeletedVappDao {
 	@Select
 	DeletedVapp selectByID(String vappID);
 
+	// TODO selectByUserIDに期間をつける
+
 	@Update
 	int update(DeletedVapp employee);
 
