@@ -1,9 +1,11 @@
 package work;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -14,6 +16,7 @@ import org.junit.Test;
 
 import work.VApp4Work.AUTH_STATUS;
 import all.InjMgr;
+import base.mydata.User;
 
 import com.vmware.vcloud.sdk.VCloudException;
 
@@ -62,6 +65,40 @@ public class ControllerTest {
 
 	}
 
+	@Test
+	public void testフィールド内容確認() throws VCloudException {
+
+		Set<VApp4Work> vappSet = contoroller
+		// .getVappSetByUser("KAIGIV5", "admin1");
+				.getVappSet("KAIGIV5");
+
+		for (VApp4Work vApp4Work : vappSet) {
+
+			System.out.println(vApp4Work.getName() + "_" + vApp4Work.getID());
+
+			List<User> allUsers = vApp4Work.getAllUsers();
+			for (User user : allUsers) {
+				System.out.println("----------------------------------------");
+
+				System.out.println(user.getFullName());
+				System.out.println(user.getNameInSource());
+
+				System.out.println(user.getEmailAddress());
+				System.out.println(user.getId());
+				System.out.println();
+				System.out.println();
+				System.out.println();
+
+				System.out.println("----------------------------------------");
+
+			}
+
+			assertNotNull(vApp4Work.getID());
+		}
+
+	}
+
+	@Test
 	public void testWriteAttr() throws VCloudException {
 
 		Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
@@ -131,7 +168,7 @@ public class ControllerTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testWriteAttrコントローラレベルのリフレッシュ() throws VCloudException {
 
 		Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
@@ -191,7 +228,7 @@ public class ControllerTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testWriteAttrVAPPレベルのリフレッシュ() throws VCloudException {
 
 		Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
@@ -255,7 +292,7 @@ public class ControllerTest {
 
 	}
 
-	// @Test
+	@Test
 	public void testWriteAttrVAPPレベルのリフレッシュを非同期でする() throws VCloudException {
 
 		Set<VApp4Work> vappSet = contoroller.getVappSetByUser("KAIGIV5",
@@ -454,7 +491,7 @@ public class ControllerTest {
 			vApp4Work.setpNo("LIPJ10030678");
 			vApp4Work.metadataUpdate();
 
-			assertEquals(false, vApp4Work.isAuthStatus());
+			assertEquals(AUTH_STATUS.BEFORE_AUTH, vApp4Work.getAuthStatus());
 		}
 
 		vappSet = contoroller.refresh(vappSet);
